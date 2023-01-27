@@ -219,6 +219,7 @@ $("#create-vm").click(function(){
     const template = document.getElementById('template').value;
     const ssh_key = document.getElementById('ssh-key').value;
     const iso = document.getElementById('iso').value;
+    const virtio = document.getElementById('virtio').value;
     const user = document.getElementById('user');
     const max_cpu = $(this).data('max_cpu');
     const max_mem = $(this).data('max_mem');
@@ -282,6 +283,7 @@ $("#create-vm").click(function(){
                                 data.append('template', template);
                                 data.append('disk', disk);
                                 data.append('iso', iso);
+                                data.append('virtio', virtio);
                                 data.append('ssh_key', ssh_key);
                                 if (user) {
                                     data.append('user', user.value);

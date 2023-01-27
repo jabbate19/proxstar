@@ -363,23 +363,26 @@ class VM:
 
 # Will create a new VM with the given parameters, does not guarantee
 # the VM is done provisioning when returning
-def create_vm(proxmox, user, name, cores, memory, disk, iso):
+def create_vm(proxmox, user, name, cores, memory, disk, iso, virtio):
     node = proxmox.nodes(get_node_least_mem(proxmox))
     vmid = get_free_vmid(proxmox)
     # Make sure lingering expirations are deleted
     delete_vm_expire(db, vmid)
-    node.qemu.create(
-        vmid=vmid,
-        name=name,
-        cores=cores,
-        memory=memory,
-        storage=app.config['PROXMOX_VM_STORAGE'],
-        virtio0='{}:{}'.format(app.config['PROXMOX_VM_STORAGE'], disk),
-        ide2='{},media=cdrom'.format(iso),
-        net0='virtio,bridge=vmbr0',
-        pool=user,
-        description='Managed by Proxstar',
-    )
+    vm_features = {
+        'vmid':vmid,
+        'name':name,
+        'cores':cores,
+        'memory':memory,
+        'storage':app.config['PROXMOX_VM_STORAGE'],
+        'virtio0':'{}:{}'.format(app.config['PROXMOX_VM_STORAGE'], disk),
+        'ide2':'{},media=cdrom'.format(iso),
+        'net0':'virtio,bridge=vmbr0',
+        'pool':user,
+        'description':'Managed by Proxstar'
+    }
+    if virtio:
+        vm_features['ide0'] = 'nfs-iso:iso/virtio-win.iso,media=cdrom'
+    node.qemu.create(**vm_features)
     return vmid
 
 

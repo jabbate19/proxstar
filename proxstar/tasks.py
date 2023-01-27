@@ -60,7 +60,7 @@ def set_job_status(job, status):
     job.save_meta()
 
 
-def create_vm_task(user, name, cores, memory, disk, iso):
+def create_vm_task(user, name, cores, memory, disk, iso, virtio):
     with app.app_context():
         job = get_current_job()
         proxmox = connect_proxmox()
@@ -69,7 +69,7 @@ def create_vm_task(user, name, cores, memory, disk, iso):
             starrs = connect_starrs()
         logging.info('[{}] Creating VM.'.format(name))
         set_job_status(job, 'creating VM')
-        vmid = create_vm(proxmox, user, name, cores, memory, disk, iso)
+        vmid = create_vm(proxmox, user, name, cores, memory, disk, iso, virtio)
         logging.info('[{}] Waiting until Proxmox is done provisioning.'.format(name))
         set_job_status(job, 'waiting for Proxmox')
         timeout = 20

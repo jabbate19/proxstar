@@ -592,6 +592,7 @@ def create():
             template = request.form['template']
             disk = request.form['disk']
             iso = request.form['iso']
+            virtio = request.form['virtio']
             ssh_key = request.form['ssh_key']
             if iso != 'none':
                 iso = '{}:iso/{}'.format(app.config['PROXMOX_ISO_STORAGE'], iso)
@@ -621,6 +622,7 @@ def create():
                             memory,
                             disk,
                             iso,
+                            virtio,
                             job_timeout=300,
                         )
                     else:
